@@ -41,17 +41,16 @@ def opmenu(dicionario):
             menu(dicionario)
         
         case '2':
-            dicionario.clear()
+            dicionario['fruto'] = {}
+            dicionario['legume'] = {}
             print("\nDicionário limpo!")
             esperartecla()
             menu(dicionario)
         
         case '3':
-            while verificardici(dicionario, "legume"):
                 submenu("legume")
             
         case '4':
-            while verificardici(dicionario, "fruto"):
                 submenu("fruto")
 
         case '5':
@@ -96,17 +95,19 @@ def opsubmenu(tipo):
             esperartecla()           
         
         case '2':
-            print(f"O {tipo} «{remover(tipo)}» foi removido!")
-            esperartecla()          
+            if verificardici(dicionario, tipo):
+                print(f"O {tipo} «{remover(tipo)}» foi removido!")
+                esperartecla()          
         
         case '3':
             print(f"O {tipo} «{adicionar(tipo)}» foi adicionado!")
             esperartecla()                       
 
         case '4':
-            escolha1,escolha2 = editar(tipo)
-            print(f"O {tipo} «{escolha1}» foi editado para «{escolha2}»!")
-            esperartecla()        
+            while verificardici(dicionario, tipo):
+                escolha1,escolha2 = editar(tipo)
+                print(f"O {tipo} «{escolha1}» foi editado para «{escolha2}»!")
+                esperartecla()        
             
         case '5':
             system('cls')
@@ -231,7 +232,7 @@ def verificardici(dicionario, tipo):
     except:
         print(f"\nO dicionário não contem {tipo}s. Escolha outra opção.\n")
         esperartecla()
-        menu(dicionario)
+        submenu(dicionario)
 
 
 #PROGRAMA PRINCIPAL:
