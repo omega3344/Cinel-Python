@@ -41,17 +41,19 @@ def opmenu(dicionario):
             menu(dicionario)
         
         case '2':
-            dicionario['fruto'] = {}
-            dicionario['legume'] = {}
+            dicionario['fruto'] = []
+            dicionario['legume'] = []
             print("\nDicionário limpo!")
             esperartecla()
             menu(dicionario)
         
         case '3':
-                submenu("legume")
+                tipo = "legume"
+                submenu(tipo)
             
         case '4':
-                submenu("fruto")
+                tipo = "fruto"
+                submenu(tipo)
 
         case '5':
             system('cls')
@@ -92,22 +94,32 @@ def opsubmenu(tipo):
         case '1':
             print(f"\nOs {tipo}s constantes do dicionário são:\n")
             listar(tipo)
-            esperartecla()           
+            esperartecla()   
+            submenu(tipo)        
         
         case '2':
-            if verificardici(dicionario, tipo):
+            if len(dicionario[tipo])>0:
                 print(f"O {tipo} «{remover(tipo)}» foi removido!")
-                esperartecla()          
+                esperartecla()  
+            else:
+                print(f"\nO dicionário não contem {tipo}s. Escolha outra opção.\n")
+                esperartecla()
+            submenu(tipo)
         
         case '3':
             print(f"O {tipo} «{adicionar(tipo)}» foi adicionado!")
-            esperartecla()                       
+            esperartecla()    
+            submenu(tipo)                   
 
         case '4':
-            while verificardici(dicionario, tipo):
+            if len(dicionario[tipo])>0:
                 escolha1,escolha2 = editar(tipo)
                 print(f"O {tipo} «{escolha1}» foi editado para «{escolha2}»!")
-                esperartecla()        
+                esperartecla()   
+            else:
+                print(f"\nO dicionário não contem {tipo}s. Escolha outra opção.\n")
+                esperartecla()
+            submenu(tipo)
             
         case '5':
             system('cls')
@@ -153,6 +165,7 @@ def adicionar(tipo):
     while escolha in dicionario[tipo]:
         escolha = input(f"\nO {tipo} «{escolha}» já existe no dicionário.\nIntroduza um outro {tipo}: ")
 
+    print(tipo)
     dicionario[tipo].append(escolha)
     return(escolha)
             
@@ -222,19 +235,6 @@ def esperartecla():
     input("\nPrima a tecla «Enter» para continuar.")
 
 
-#verificar existência de chaves no dicionário
-
-def verificardici(dicionario, tipo):
-
-    try:
-        if len(dicionario[tipo])>0:
-            return True
-    except:
-        print(f"\nO dicionário não contem {tipo}s. Escolha outra opção.\n")
-        esperartecla()
-        submenu(dicionario)
-
-
 #PROGRAMA PRINCIPAL:
 
 #importar dados do ficheiro
@@ -252,6 +252,7 @@ except:
 
 #construir dicionário
 
+global dicionario
 dicionario = {}
 
 for dados in cont:
