@@ -1,25 +1,77 @@
 ####################################################################################################
 #                                        JOGO DA MEMÓRIA                                           #
-#                                           Versão 2.0                                             #
+#                                           Versão 3.0                                             #
 ####################################################################################################
 
 
 #importar bibliotecas
 
 from tkinter import *
+from tkinter import ttk
+import tkinter as tk
 import winsound
 import random
 import time
+import os
+import sys
 
 
 #FUNÇÕES:
+
+
+    
+    #global img1, img2, img3, img4, img5, img6, img7, img8, inicio, tema
+    
+
+#janela de arranque do jogo
+
+def jan_init ():
+
+    #atribui escolha do tema
+
+    def atribuir_tema():
+
+        global tema
+        tema = combo.get()
+        init.destroy()
+
+    #criar janela de arranque do jogo
+
+    init = Tk()
+    in_l = 300
+    in_a = 300
+    centrar(init, in_l, in_a)
+    init['bg']=('Linen')
+    init.resizable(0,0)
+    init.wm_overrideredirect(True) 
+    init.focus_force()
+
+
+    #criar combobox com temas de jogo
+    
+    temas = ['Frutas', 'Cores', 'Animais', 'Formas', 'Super-Heróis']
+
+    lab = Label(init, text='Escolha o tema do jogo', bg = 'Linen', font= ('Helvetica', 18, 'bold'))
+    lab.pack(pady=25)
+    combo = ttk.Combobox(init, values = temas, textvariable = tk.StringVar(), width=30, font= ('Helvetica', 10, 'bold'))
+    combo.set(temas[2])
+    combo.configure(state='readonly', justify='center')
+    combo.pack(pady=10)
+
+    #criar botão de escolha para iniciar jogo
+
+    ini = Button(init, text = "Iniciar jogo", font= ('Helvetica', 15, 'bold'), command = atribuir_tema)
+    ini.pack(pady=15)
+
+    init.mainloop()
+
 
 #(re)iniciar o jogo
 
 def iniciar():
 
-    global pares, vencedor, lista_btn, lista_resp, dict_resp, jogadas, cont
-    
+    global pares, vencedor, lista_btn, lista_resp, dict_resp, jogadas, cont, tema
+
     #definição de variáveis
 
     vencedor = 0
@@ -30,7 +82,7 @@ def iniciar():
 
     #criar emparelhamento e baralhar imagens
 
-    pares = [maca, maca, banana, banana, cereja, cereja, limao, limao, laranja, laranja, pera, pera, ananas, ananas, morango, morango]
+    pares = [img1, img1, img2, img2, img3, img3, img4, img4, img5, img5, img6, img6, img7, img7, img8, img8]
     random.shuffle(pares)
 
 
@@ -42,6 +94,7 @@ def limpar():
     njoga['text']=(f'Número de jogadas: {jogadas}')
     rec['text']=(f'Recorde de jogadas: {recorde}')
     legenda.config(text='', bg='Bisque',)
+    nome['bg']=('Bisque')
     copyr['bg']=('Bisque')
     for btn in lista_btn:
         btn.config(image=inicio, state='normal', cursor='hand2', relief='groove')
@@ -54,7 +107,8 @@ def vitoria():
 
     global jogadas, recorde
     
-    legenda.config(text='PARABÉNS!!!', bg= 'Coral1',)  
+    legenda.config(text='PARABÉNS!!!', bg= 'Coral1',)
+    nome['bg']=('Coral1')  
     copyr['bg']=('Coral1')      
     janela['bg']=('Coral1')
     janela.update()
@@ -118,12 +172,10 @@ def click_botao(b, num):
 
 #centrar janela
 
-def centrar (jan):
+def centrar (jan, jan_l, jan_a):
 
     ecra_l = jan.winfo_screenwidth()
     ecra_a = jan.winfo_screenheight()
-    jan_l = 640
-    jan_a = 700
     posx = ecra_l//2 - jan_l//2
     posy = ecra_a//2 - jan_a//2
     jan.geometry(f'{jan_l}x{jan_a}+{posx}+{posy}')
@@ -146,27 +198,38 @@ def gravarrec(recorde):
 
 #PROGRAMA PRINCIPAL:
 
+#inicializar temas de jogo
+
+jan_init()
+
+
 #criar janela do jogo
 
 janela = Tk()
-centrar(janela)
-janela.title('Jogo da Memória')
-#janela.iconbitmap('./imagens/omega3344.ico')
+jan_l = 800
+jan_a = 930
+centrar(janela, jan_l, jan_a)
 janela['bg']=('Bisque')
 janela.resizable(0,0)
 janela.wm_overrideredirect(True)
 
 
+#criar label para nome do jogo
+
+nome = Label(janela, text=f'JOGO DA MEMÓRIA', bg='Bisque', font= ('Helvetica', 20, 'bold'))
+nome.pack(pady = 10)
+
+
 #criar contentor superior para mensagens
 
 contentor = Frame(janela, bg='lightyellow', highlightbackground="black", highlightthickness=1)
-contentor.pack(pady=15)
+contentor.pack(pady=10)
 
 
 #criar contentor para tabuleiro de jogo
 
 frame = Frame(janela)
-frame.pack(pady=20)
+frame.pack(pady=10)
 
 
 #importar valor do recorde
@@ -180,32 +243,32 @@ try:
 except:
     
     recorde = 50
-
+    
 
 #importação de imagens
 
-maca = PhotoImage(file = './imagens/maca.png').subsample(3,3)
-banana = PhotoImage(file = './imagens/banana.png').subsample(3,3)
-cereja = PhotoImage(file = './imagens/cereja.png').subsample(3,3)
-limao = PhotoImage(file = './imagens/limao.png').subsample(3,3)
-laranja = PhotoImage(file = './imagens/laranja.png').subsample(3,3)
-pera = PhotoImage(file = './imagens/pera.png').subsample(3,3)
-ananas = PhotoImage(file = './imagens/ananas.png').subsample(3,3)
-morango = PhotoImage(file = './imagens/morango.png').subsample(3,3)
-inicio = PhotoImage(file = './imagens/inicio.png').subsample(3,3)
+img1 = PhotoImage(file = f'./imagens/{tema}/imagem1.png').subsample(2,2)
+img2 = PhotoImage(file = f'./imagens/{tema}/imagem2.png').subsample(2,2)
+img3 = PhotoImage(file = f'./imagens/{tema}/imagem3.png').subsample(2,2)
+img4 = PhotoImage(file = f'./imagens/{tema}/imagem4.png').subsample(2,2)
+img5 = PhotoImage(file = f'./imagens/{tema}/imagem5.png').subsample(2,2)
+img6 = PhotoImage(file = f'./imagens/{tema}/imagem6.png').subsample(2,2)
+img7 = PhotoImage(file = f'./imagens/{tema}/imagem7.png').subsample(2,2)
+img8 = PhotoImage(file = f'./imagens/{tema}/imagem8.png').subsample(2,2)
+inicio = PhotoImage(file = f'./imagens/inicio.png').subsample(2,2)
 
 
-#inicializar o jogo
+#inicializar jogo
 
 iniciar()
 
 
 #criar labels para jogadas e recorde
 
-njoga = Label(contentor, text=f'Número de jogadas: {jogadas}', bg='lightyellow', font= ('Helvetica', 15, 'bold'))
-rec = Label(contentor, text=f'Recorde de jogadas: {recorde}', bg='lightyellow', font= ('Helvetica', 15, 'bold'))
-njoga.grid(row=0, column=0, padx=30)
-rec.grid(row=0, column=1, padx=30)
+njoga = Label(contentor, text=f'Número de jogadas: {jogadas}', bg='lightyellow', font= ('Helvetica', 12, 'bold'))
+rec = Label(contentor, text=f'Recorde de jogadas: {recorde}', bg='lightyellow', font= ('Helvetica', 12, 'bold'))
+njoga.grid(row=0, column=0, padx=20)
+rec.grid(row=0, column=1, padx=20)
 
 
 #criar botões com imagem inicial
@@ -219,7 +282,7 @@ b5 = Button(frame, image=inicio, command=lambda: click_botao(b5, 5), cursor = 'h
 b6 = Button(frame, image=inicio, command=lambda: click_botao(b6, 6), cursor = 'hand2', relief='groove')
 b7 = Button(frame, image=inicio, command=lambda: click_botao(b7, 7), cursor = 'hand2', relief='groove')
 b8 = Button(frame, image=inicio, command=lambda: click_botao(b8, 8), cursor = 'hand2', relief='groove')
-b9 = Button(frame, image=inicio, command=lambda: click_botao(b9, 9), relief='groove')
+b9 = Button(frame, image=inicio, command=lambda: click_botao(b9, 9), cursor = 'hand2', relief='groove')
 b10 = Button(frame, image=inicio, command=lambda: click_botao(b10, 10), cursor = 'hand2', relief='groove')
 b11 = Button(frame, image=inicio, command=lambda: click_botao(b11, 11), cursor = 'hand2', relief='groove')
 b12 = Button(frame, image=inicio, command=lambda: click_botao(b12, 12), cursor = 'hand2', relief='groove')
@@ -240,7 +303,7 @@ for y in range(4):
 #criar label para mensagem de texto
 
 legenda = Label(janela, text='', bg='Bisque', font= ('Helvetica', 20, 'bold'))
-legenda.pack(pady=20)
+legenda.pack(pady=15)
 
 
 #criar listas de mensagens de texto
@@ -257,6 +320,8 @@ janela.config(menu=menu)
 opcoes_menu = Menu(menu, tearoff=False)
 menu.add_cascade(label='Opções do jogo', menu=opcoes_menu)
 opcoes_menu.add_command(label='Reiniciar jogo', command=limpar)
+opcoes_menu.add_separator()
+opcoes_menu.add_command(label='Escolher novo tema', command=lambda:os.execv(sys.executable, ['python'] + sys.argv))
 opcoes_menu.add_separator()
 opcoes_menu.add_command(label='Sair do jogo', command=janela.destroy)
 
